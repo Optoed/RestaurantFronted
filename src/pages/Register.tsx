@@ -1,28 +1,44 @@
 import React, { useState } from 'react';
-import api from '../api'; // Import your axios instance
+import { registerUser } from '../service/registerService';
+
+export type ErrorType = {
+    isError: boolean;
+    message?: string;
+    code?: string;
+    isOpenModal?: boolean;
+};
+
+export type SuccessType = {
+    isSuccess: boolean;
+    message?: string;
+};
 
 const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('user');
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+    const [error, setError] = useState<ErrorType>({ isError: false });
+    const [success, setSuccess] = useState<SuccessType>({ isSuccess: false });
 
-    const handleRegister = async (event: React.FormEvent) => {
-        event.preventDefault();
-        setError(null);
-        setSuccess(null);
+    const handleRegister = async () => {
+        setError({ isError: false });
+        setSuccess({ isSuccess: false });
 
         const payload = { name, email, password, role };
-        console.log("Payload:", payload);
-
         try {
-            const response = await api.post('/register', payload);
-            setSuccess('Registration successful! Please log in.');
-            console.log(response.data);
+            const response = await registerUser(payload);
+            setSuccess({
+                isSuccess: true,
+                message: 'Registration successful! Please log in.',
+            });
+            console.log(response);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'An error occurred during registration.');
+            setError({
+                isError: true,
+                message: err.response?.data?.message || 'An error occurred during registration.',
+                code: err.response?.status,
+            });
             console.error(err);
         }
     };
@@ -30,7 +46,7 @@ const Register = () => {
     return (
         <div>
             <h1>Register</h1>
-            <form onSubmit={handleRegister}>
+            <div>
                 <div>
                     Name
                     <input
@@ -62,21 +78,21 @@ const Register = () => {
                     Role
                     <select
                         value={role}
-                        onChange={(e) => { setRole(e.target.value); }}
+                        onChange={(e) => setRole(e.target.value)}
                         required
                     >
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
-                <button type="submit">Register</button>
-            </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>{success}</p>}
+                <button type="button" onClick={handleRegister}>
+                    Register
+                </button>
+            </div>
+            {error.isError && <p style={{ color: 'red' }}>{error.message}</p>}
+            {success.isSuccess && <p style={{ color: 'green' }}>{success.message}</p>}
         </div>
     );
 };
 
 export default Register;
-
-export { };
