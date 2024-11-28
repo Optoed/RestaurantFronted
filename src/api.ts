@@ -8,12 +8,6 @@ const api = axios.create({
     },
 });
 
-api.interceptors.response.use(
-    response => response,
-    error => {
-        return Promise.reject(error);
-    }
-);
 
 export default api;
 export { };  // Make sure TypeScript treats this as a module
