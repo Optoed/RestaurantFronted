@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import { registerUser } from '../service/registerService';
+import { ErrorType } from '../types/errorType';
+import { SuccessType } from '../types/successType';
 
-export type ErrorType = {
-    isError: boolean;
-    message?: string;
-    code?: string;
-    isOpenModal?: boolean;
-};
 
-export type SuccessType = {
-    isSuccess: boolean;
-    message?: string;
-};
 
 const Register = () => {
     const [name, setName] = useState('');
