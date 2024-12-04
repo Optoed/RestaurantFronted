@@ -1,7 +1,8 @@
 // src/service/userService.ts
 
 import axios from 'axios';
-import { UserType } from '../types/userType';
+import { OrderType } from '../types/orderType';
+
 
 // Simulate an API request to fetch all orders
 export const getAllOrders = async (): Promise<{ data: OrderType[] }> => {

@@ -8,6 +8,11 @@ interface RegisterPayload {
 }
 
 export const registerUser = async (payload: RegisterPayload) => {
-    const response = await api.post('/register', payload);
-    return response.data; // Возвращаем данные
+    try {
+        const response = await api.post('/register', payload); // Запрос на /register будет отправлен на http://localhost:8020/api/register
+        return response.data;  // Возвращаем данные ответа от сервера
+    } catch (error) {
+        console.error('Registration error:', error);
+        throw error;  // Обработка ошибки
+    }
 };

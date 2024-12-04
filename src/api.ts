@@ -10,4 +10,3 @@ const api = axios.create({
 
 
 export default api;
-export { };  // Make sure TypeScript treats this as a module
