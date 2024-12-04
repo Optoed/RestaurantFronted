@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { loginUser } from '../service/loginService'; // Функция для отправки данных на сервер
 import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
+import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<ErrorType>({ isError: false });
     const [success, setSuccess] = useState<SuccessType>({ isSuccess: false }); // Инициализируем с флагом isSuccess: false
+
+    const navigate = useNavigate(); // Инициализируем navigate
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); // Предотвращаем перезагрузку страницы
@@ -23,19 +26,39 @@ const Login = () => {
             return;
         }
 
+        console.log("Sending login request...", { email, password });  // Добавим логирование
+
         try {
             // Отправка данных на сервер для логина
             const response = await loginUser({ email, password });
 
+            console.log("Login response:", response); // Логируем ответ от сервера
+
+            const access_token: string = response.access_token;
+            console.log("Login token = ", access_token);
+
             // Если сервер вернул токен, сохраняем его в localStorage
-            if (response.token) {
-                localStorage.setItem('authToken', response.token);
+            if (access_token) {
+                localStorage.setItem('authToken', access_token);
                 setSuccess({
                     isSuccess: true,
                     message: 'Login successful!',
                 });
+
+                // Перенаправляем на страницу dashboard после успешного логина
+                setTimeout(() => {
+                    navigate('/dashboard'); // Перенаправляем на dashboard
+                }, 2000); // Ждем 2 секунды перед редиректом
+            } else {
+                setSuccess({
+                    isSuccess: false,
+                    message: 'Troubles with login because of token..',
+                });
             }
         } catch (err: any) {
+            // Логирование ошибки
+            console.error("Login error:", err);  // Логируем ошибку
+
             // Если ошибка, показываем сообщение
             setError({
                 isError: true,
@@ -44,6 +67,7 @@ const Login = () => {
             });
         }
     };
+
 
     return (
         <div>
@@ -70,6 +94,11 @@ const Login = () => {
                 {error.isError && <p style={{ color: 'red' }}>{error.message}</p>}
                 {success.isSuccess && <p style={{ color: 'green' }}>{success.message}</p>}
                 <button onClick={handleSubmit}>Login</button>
+            </div>
+
+            {/* Кнопка для перехода на страницу регистрации */}
+            <div>
+                <button onClick={() => navigate('/register')}>Don't have an account? Register</button>
             </div>
         </div>
     );

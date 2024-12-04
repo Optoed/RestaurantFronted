@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { registerUser } from '../service/registerService';
 import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
-
-
+import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -12,6 +11,8 @@ const Register = () => {
     const [role, setRole] = useState('user');
     const [error, setError] = useState<ErrorType>({ isError: false });
     const [success, setSuccess] = useState<SuccessType>({ isSuccess: false });
+
+    const navigate = useNavigate(); // Инициализируем navigate
 
     const handleRegister = async () => {
         setError({ isError: false });
@@ -24,6 +25,12 @@ const Register = () => {
                 isSuccess: true,
                 message: 'Registration successful! Please log in.',
             });
+
+            // После успешной регистрации перенаправляем на страницу логина
+            setTimeout(() => {
+                navigate('/login'); // Перенаправление на страницу логина
+            }, 2000); // Ждем 2 секунды перед редиректом (чтобы пользователь успел увидеть сообщение)
+
             console.log(response);
         } catch (err: any) {
             setError({
@@ -83,6 +90,11 @@ const Register = () => {
             </div>
             {error.isError && <p style={{ color: 'red' }}>{error.message}</p>}
             {success.isSuccess && <p style={{ color: 'green' }}>{success.message}</p>}
+
+            {/* Кнопка для перехода на страницу логина */}
+            <div>
+                <button onClick={() => navigate('/login')}>Already have an account? Login</button>
+            </div>
         </div>
     );
 };
