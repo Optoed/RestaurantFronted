@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #343a40;
+    /* Dark background */
+    padding: 1rem;
+}
+
+.navbar-brand {
+    color: #ffffff;
+    /* White text */
+    font-size: 1.5rem;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    /* Space between links */
+}
+
+.navbar-links li {
+    display: inline;
+}
+
+.navbar-links a {
+    color: #ffffff;
+    /* White text */
+    text-decoration: none;
+}
+
+.navbar-links a:hover {
+    color: #17a2b8;
+    /* Change color on hover */
+}

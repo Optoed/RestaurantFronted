@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { OrderType } from '../types/orderType';
 import { getAllOrders } from '../service/ordersService';
 import { ErrorType } from '../types/errorType'; // Import ErrorType
+import '../assets/styles/Orders.css'; // Import the CSS file
 
 const Orders = () => {
     const [orders, setOrders] = useState<OrderType[]>([]); // State to hold orders
@@ -31,12 +32,12 @@ const Orders = () => {
     }, []); // Empty dependency array to run only once when the component mounts
 
     if (loading) {
-        return <div>Loading...</div>; // Show loading indicator
+        return <div className="loading-message">Loading...</div>; // Show loading indicator
     }
 
     if (error.isError) {
         return (
-            <div style={{ color: 'red' }}>
+            <div className="error-message">
                 <p>{error.message}</p>
                 {error.code && <p>Error Code: {error.code}</p>} {/* Display error code if present */}
             </div>
@@ -44,15 +45,15 @@ const Orders = () => {
     }
 
     return (
-        <div>
-            <h1>Your Orders</h1>
-            <p>Here you can view your orders.</p>
+        <div className="orders-container">
+            <h1 className="orders-title">Your Orders</h1>
+            <p className="orders-message">Here you can view your orders.</p>
             {orders.length === 0 ? (
                 <p>No orders found.</p> // If there are no orders
             ) : (
-                <ul>
+                <ul className="orders-list">
                     {orders.map((order) => (
-                        <li key={order.id}>
+                        <li key={order.id} className="orders-list-item">
                             Order #{order.id}: Total Cost: ${order.total_cost} - Status: {order.status}
                         </li>
                     ))}

@@ -3,6 +3,7 @@ import { loginUser } from '../service/loginService'; // Функция для о
 import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
+import '../assets/styles/Login.css'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -70,7 +71,7 @@ const Login = () => {
 
 
     return (
-        <div>
+        <div className='login-container'>
             <h1>Login</h1>
             <div>
                 <div>

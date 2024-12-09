@@ -8,11 +8,13 @@ import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import { Provider } from 'react-redux';
 import store from './store';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />

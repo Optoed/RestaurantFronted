@@ -3,6 +3,7 @@ import { registerUser } from '../service/registerService';
 import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
+import '../assets/styles/Register.css'
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -43,7 +44,7 @@ const Register = () => {
     };
 
     return (
-        <div>
+        <div className='register-container'>
             <h1>Register</h1>
             <div>
                 <div>
