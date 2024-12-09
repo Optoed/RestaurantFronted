@@ -1,3 +1,5 @@
+// src/features/auth/authSlice.ts
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
@@ -27,3 +29,7 @@ const authSlice = createSlice({
 
 export const { setAuthToken, clearAuthToken } = authSlice.actions;
 export default authSlice.reducer;
+
+// Selector
+export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
+export const selectAuthToken = (state: { auth: AuthState }) => state.auth.token;

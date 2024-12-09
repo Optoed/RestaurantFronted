@@ -1,15 +1,17 @@
+// src/features/profile/profileSlice.ts
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ProfileState {
     name: string;
     email: string;
-    role: string; // Добавляем роль пользователя
+    role: string; // User role
 }
 
 const initialState: ProfileState = {
     name: '',
     email: '',
-    role: 'user', // По умолчанию "user"
+    role: 'user', // Default role
 };
 
 const profileSlice = createSlice({
@@ -31,3 +33,7 @@ const profileSlice = createSlice({
 
 export const { setProfile, clearProfile } = profileSlice.actions;
 export default profileSlice.reducer;
+
+// Selector
+export const selectUser = (state: { profile: ProfileState }) => state.profile;
+export const selectUserRole = (state: { profile: ProfileState }) => state.profile.role;

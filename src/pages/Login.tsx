@@ -56,6 +56,13 @@ const Login = () => {
                     message: 'Troubles with login because of token..',
                 });
             }
+
+            console.log(response)
+
+            localStorage.setItem('userId', response.user.id)
+            localStorage.setItem('userRole', response.user.role)
+            localStorage.setItem('customerId', response.customerId)
+
         } catch (err: any) {
             // Логирование ошибки
             console.error("Login error:", err);  // Логируем ошибку
