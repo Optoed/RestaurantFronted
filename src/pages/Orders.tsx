@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OrderType } from '../types/orderType';
-import { getOrders, createOrder } from '../service/ordersService'; // Импортируйте createOrder
+import { getOrders, makeNewOrder } from '../service/ordersService'; // Импортируйте makeNewOrder
 import { ErrorType } from '../types/errorType';
 import '../assets/styles/Orders.css';
 
@@ -8,6 +8,15 @@ const Orders = () => {
     const [orders, setOrders] = useState<OrderType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<ErrorType>({ isError: false });
+
+    // Состояние для формы нового заказа
+    const [newOrder, setNewOrder] = useState({
+        id: 1,
+        id_waiter: 1,
+        id_customer: 1,
+        total_cost: 1500,
+        status: 'Pending', // Значение по умолчанию
+    });
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -31,16 +40,16 @@ const Orders = () => {
 
     const handleCreateOrder = async () => {
         try {
-            const newOrder = {
-                // Здесь вы можете указать необходимые поля для нового заказа
-                id_waiter: 1, // Пример поля
-                id_customer: 7, // Пример поля
-                total_cost: 100, // Пример поля
-                status: 'Pending', // Пример поля
-            };
-
-            const response = await createOrder(newOrder); // Предполагается, что createOrder возвращает созданный заказ
-            setOrders((prevOrders) => [...prevOrders, response.data]); // Обновляем состояние с новым заказом
+            const response = await makeNewOrder(newOrder); // Передаем данные нового заказа
+            setOrders((prevOrders) => [...prevOrders, response.data]); // Обновляем список заказов
+            // Сбросить форму после успешного создания заказа
+            setNewOrder({
+                id: 1,
+                id_waiter: 1,
+                id_customer: 1,
+                total_cost: 1500,
+                status: 'Pending', // Значение по умолчанию
+            });
         } catch (err) {
             setError({
                 isError: true,
@@ -49,6 +58,14 @@ const Orders = () => {
                 isOpenModal: true,
             });
         }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setNewOrder((prevOrder) => ({
+            ...prevOrder,
+            [name]: value,
+        }));
     };
 
     if (loading) {
@@ -68,9 +85,15 @@ const Orders = () => {
         <div className="orders-container">
             <h1 className="orders-title">Your Orders</h1>
             <p className="orders-message">Here you can view your orders.</p>
-            <button onClick={handleCreateOrder} className="create-order-button">
-                Сделать заказ
-            </button>
+
+            {/* Форма для создания нового заказа */}
+            <div className="new-order-form">
+                <h2>Create New Order</h2>
+                <button onClick={handleCreateOrder} className='create-order-button'>
+                    Make new order
+                </button>
+            </div>
+
             {orders.length === 0 ? (
                 <p>No orders found.</p>
             ) : (
@@ -78,8 +101,7 @@ const Orders = () => {
                     {orders.map((order) => (
                         <li key={order.id} className="orders-list-item">
                             Order #{order.id}: Total Cost: ${order.total_cost} - Status: {order.status}
-                        </li>
-                    ))}
+                        </li>))}
                 </ul>
             )}
         </div>

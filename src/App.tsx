@@ -9,6 +9,7 @@ import Orders from './pages/Orders';
 import { Provider } from 'react-redux';
 import store from './store';
 import Navbar from './components/Navbar';
+import Menu from './pages/Menu';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/menu" element={<Menu />} />
         </Routes>
       </Router>
     </Provider>
