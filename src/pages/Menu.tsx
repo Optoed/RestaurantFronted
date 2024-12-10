@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getDishes } from '../service/menuService';
 import { DishType } from '../types/dishType';
+import { LinearProgress } from '@mui/material'; // Импортируйте LinearProgress
 import '../assets/styles/Menu.css';
 
 const Menu = () => {
     const [dishes, setDishes] = useState<DishType[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showLoading, setShowLoading] = useState(true); // Новое состояние для управления видимостью полосы загрузки
     const [isAdmin, setIsAdmin] = useState(false); // Состояние для роли администратора
     const [message, setMessage] = useState(''); // Состояние для сообщения
     const [showMessage, setShowMessage] = useState(false); // Состояние для отображения сообщения
@@ -22,7 +24,14 @@ const Menu = () => {
             } catch (error) {
                 console.error("Error fetching data", error);
             } finally {
-                setLoading(false);
+                // Установите таймер для скрытия полосы загрузки через 1 секунду
+                const timer = setTimeout(() => {
+                    setShowLoading(false);
+                    setLoading(false);
+                }, 1000); // 1 секунда
+
+                // Очистите таймер при размонтировании компонента
+                return () => clearTimeout(timer);
             }
         };
 
@@ -42,31 +51,33 @@ const Menu = () => {
         }, 3000);
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div className="menu-container">
-            <h1 className="menu-title">Menu</h1>
-            <p>Welcome to our menu</p>
+            {showLoading && <LinearProgress />} {/* Показываем полосу загрузки только если showLoading true */}
 
-            {isAdmin && (
-                <button className="add-dish-button">Добавить новое блюдо</button>
+            {!showLoading && ( // Отображаем контент только если showLoading false
+                <>
+                    <h1 className="menu-title">Menu</h1>
+                    <p>Welcome to our menu</p>
+
+                    {isAdmin && (
+                        <button className="add-dish-button">Добавить новое блюдо</button>
+                    )}
+
+                    {showMessage && <div className="cart-message">{message}</div>} {/* Отображаем сообщение */}
+
+                    <ul>
+                        {dishes.map((dish) => (
+                            <li key={dish.id} className="menu-item">
+                                <h2>{dish.name}</h2>
+                                <p>Cost: ${dish.cost}</p>
+                                <p>Rating: {dish.rating}/5</p>
+                                <button onClick={() => handleAddToCart(dish)}>Добавить в корзину</button>
+                            </li>
+                        ))}
+                    </ul>
+                </>
             )}
-
-            {showMessage && <div className="cart-message">{message}</div>} {/* Отображаем сообщение */}
-
-            <ul>
-                {dishes.map((dish) => (
-                    <li key={dish.id} className="menu-item">
-                        <h2>{dish.name}</h2>
-                        <p>Cost: ${dish.cost}</p>
-                        <p>Rating: {dish.rating}/5</p>
-                        <button onClick={() => handleAddToCart(dish)}>Добавить в корзину</button>
-                    </li>
-                ))}
-            </ul>
         </div>
     );
 };
