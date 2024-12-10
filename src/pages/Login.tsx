@@ -4,6 +4,7 @@ import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 import '../assets/styles/Login.css'
+import { resolve } from 'path';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -62,6 +63,8 @@ const Login = () => {
             localStorage.setItem('userId', response.user.id)
             localStorage.setItem('userRole', response.user.role)
             localStorage.setItem('customerId', response.customerId)
+            localStorage.setItem('userName', response.user.name)
+            localStorage.setItem('userEmail', response.user.email)
 
         } catch (err: any) {
             // Логирование ошибки
