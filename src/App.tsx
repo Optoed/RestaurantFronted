@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import Navbar from './components/Navbar';
 import Menu from './pages/Menu';
+import Cooks from './pages/Cooks';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/cooks" element={<Cooks />} />
         </Routes>
       </Router>
     </Provider>

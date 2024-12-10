@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-
-// Example API service that fetches users and admins
 import { getAllUsers } from '../service/userService';
 import { UserType } from '../types/userType';
+import '../assets/styles/Dashboard.css'; // Импортируйте файл стилей
 
 const Dashboard = () => {
     const [users, setUsers] = useState<UserType[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch users and admins
         const fetchData = async () => {
             try {
                 const usersResponse = await getAllUsers();
@@ -29,7 +27,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div>
+        <div className="container">
             <h1>Dashboard</h1>
             <p>Welcome to your admin dashboard!</p>
 

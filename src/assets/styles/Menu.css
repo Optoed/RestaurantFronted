@@ -1,0 +1,51 @@
+.cart-message {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #d4edda;
+    /* Зеленый фон */
+    color: #155724;
+    /* Темно-зеленый текст */
+    border: 1px solid #c3e6cb;
+    /* Зеленая рамка */
+    border-radius: 5px;
+}
+
+.menu-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.menu-title {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.menu-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fff;
+}
+
+.menu-item h2 {
+    margin: 0;
+}
+
+.menu-item p {
+    margin: 5px 0;
+}
+
+.add-dish-button {
+    margin: 20px 0;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-dish-button:hover {
+    background-color: #218838;
+}
