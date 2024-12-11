@@ -74,17 +74,6 @@ const Register = () => {
                         required
                     />
                 </div>
-                <div>
-                    Role
-                    <select
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        required
-                    >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
                 <button type="button" onClick={handleRegister}>
                     Register
                 </button>

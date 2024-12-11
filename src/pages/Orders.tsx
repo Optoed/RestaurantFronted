@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { OrderType } from '../types/orderType';
 import { getOrders, makeNewOrder } from '../service/ordersService';
-import { ErrorType } from '../types/errorType';
 import { LinearProgress, Button, Snackbar } from '@mui/material'; // Import Snackbar for error messages
 import '../assets/styles/Orders.css';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { ErrorType } from '../types/errorType';
 
 const Orders = () => {
     const [orders, setOrders] = useState<OrderType[]>([]);
@@ -14,14 +16,19 @@ const Orders = () => {
         id: 1,
         id_waiter: 1,
         id_customer: 1,
-        total_cost: 1500,
+        total_cost: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
         status: 'Pending',
     });
+
+    // Получаем данные из Redux
+    const userToken = useSelector((state: RootState) => state.auth.userToken);
+    const userRole = useSelector((state: RootState) => state.profile.role); // Предполагается, что вы сохраняете роль в профиле
+    const customerId = useSelector((state: RootState) => state.profile.id_customer); // Предполагается, что вы сохраняете id_customer в профиле
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await getOrders();
+                const response = await getOrders(userToken, userRole, customerId);
                 setOrders(response.data);
             } catch (err) {
                 setError({
@@ -40,17 +47,17 @@ const Orders = () => {
         };
 
         fetchOrders();
-    }, []);
+    }, [userToken, userRole, customerId]); // Добавьте зависимости
 
     const handleCreateOrder = async () => {
         try {
-            const response = await makeNewOrder(newOrder);
+            const response = await makeNewOrder(newOrder, userToken, customerId);
             setOrders((prevOrders) => [...prevOrders, response.data]);
             setNewOrder({
                 id: 1,
                 id_waiter: 1,
                 id_customer: 1,
-                total_cost: 1500,
+                total_cost: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
                 status: 'Pending',
             });
         } catch (err) {

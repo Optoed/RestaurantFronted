@@ -18,13 +18,12 @@ const Menu = () => {
                 const dishesResponse = await getDishes();
                 setDishes(dishesResponse.data);
 
-                // Получаем информацию о текущем пользователе
                 const role = localStorage.getItem('userRole');
-                setIsAdmin(role === 'admin'); // Устанавливаем isAdmin в зависимости от роли
+                setIsAdmin(role === 'admin');
             } catch (error) {
                 console.error("Error fetching data", error);
             } finally {
-                // Установите таймер для скрытия полосы загрузки через 1 секунду
+
                 const timer = setTimeout(() => {
                     setShowLoading(false);
                     setLoading(false);
@@ -70,8 +69,8 @@ const Menu = () => {
                         {dishes.map((dish) => (
                             <li key={dish.id} className="menu-item">
                                 <h2>{dish.name}</h2>
-                                <p>Cost: ${dish.cost}</p>
-                                <p>Rating: {dish.rating}/5</p>
+                                <p>Cost: {dish.cost} руб.</p>
+                                <p>Rating: {dish.rating}/10</p>
                                 <button onClick={() => handleAddToCart(dish)}>Добавить в корзину</button>
                             </li>
                         ))}

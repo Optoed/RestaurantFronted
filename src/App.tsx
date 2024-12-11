@@ -16,6 +16,7 @@ import CooksPage from './pages/Cooks';
 function App() {
   return (
     <Provider store={store}>
+      {/* auth */}
       <Router>
         <Navbar />
         <Routes>

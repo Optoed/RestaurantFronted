@@ -1,16 +1,8 @@
-// src/service/userService.ts
+import api from "../api";
+import { OrderType } from "../types/orderType";
 
-import axios from 'axios';
-import { OrderType } from '../types/orderType';
-import api from '../api';
-
-export const getOrders = async (): Promise<{ data: OrderType[] }> => {
-    const userToken = localStorage.getItem('authToken');
-    const userRole = localStorage.getItem('userRole');
-    const userId = localStorage.getItem('userId');
-    const customerId = localStorage.getItem('customerId');
-
-    if (!userToken || !userRole || !userId || !customerId) {
+export const getOrders = async (userToken: string, userRole: string, customerId: number): Promise<{ data: OrderType[] }> => {
+    if (!userToken || !userRole || !customerId) {
         throw new Error('No authToken or user information');
     }
 
@@ -33,17 +25,12 @@ export const getOrders = async (): Promise<{ data: OrderType[] }> => {
             throw new Error('Unexpected role');
         }
     } catch (error) {
-        throw new Error('Error fetching users');
+        throw new Error('Error fetching orders');
     }
 };
 
-export const makeNewOrder = async (orderData: OrderType): Promise<{ data: OrderType }> => {
-    const userToken = localStorage.getItem('authToken');
-    const userRole = localStorage.getItem('userRole');
-    const userId = localStorage.getItem('userId');
-    const customerId = localStorage.getItem('customerId');
-
-    if (!userToken || !userRole || !userId || !customerId) {
+export const makeNewOrder = async (orderData: OrderType, userToken: string, customerId: number): Promise<{ data: OrderType }> => {
+    if (!userToken || !customerId) {
         throw new Error('No authToken or user information');
     }
 
@@ -52,11 +39,11 @@ export const makeNewOrder = async (orderData: OrderType): Promise<{ data: OrderT
     try {
         const response = await api.post('/order', orderData, {
             headers: {
-                Authorization: `Bearer ${userToken}`, // Добавьте токен авторизации
+                Authorization: `Bearer ${userToken}`,
             },
         });
 
-        return { data: response.data }; // Верните данные ответа
+        return { data: response.data };
     } catch (error) {
         console.error('Error creating order:', error);
         throw new Error('Failed to create order');

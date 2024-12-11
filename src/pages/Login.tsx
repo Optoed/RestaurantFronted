@@ -3,16 +3,19 @@ import { loginUser } from '../service/loginService'; // Функция для о
 import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
-import '../assets/styles/Login.css'
-import { resolve } from 'path';
+import { useDispatch } from 'react-redux'; // Импортируем useDispatch
+import { setAuthToken, clearAuthToken } from '../features/auth/authSlice'; // Импортируем действия из authSlice
+import { setProfile } from '../features/profile/profileSlice'; // Импортируем действия из profileSlice
+import '../assets/styles/Login.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<ErrorType>({ isError: false });
-    const [success, setSuccess] = useState<SuccessType>({ isSuccess: false }); // Инициализируем с флагом isSuccess: false
+    const [success, setSuccess] = useState<SuccessType>({ isSuccess: false });
 
     const navigate = useNavigate(); // Инициализируем navigate
+    const dispatch = useDispatch(); // Инициализируем dispatch
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); // Предотвращаем перезагрузку страницы
@@ -42,6 +45,17 @@ const Login = () => {
             // Если сервер вернул токен, сохраняем его в localStorage
             if (access_token) {
                 localStorage.setItem('authToken', access_token);
+                dispatch(setAuthToken(access_token)); // Сохраняем токен в Redux
+
+                // Сохраняем данные профиля в Redux
+                dispatch(setProfile({
+                    id: response.user.id,
+                    id_customer: response.customerId,
+                    name: response.user.name,
+                    email: response.user.email,
+                    role: response.user.role,
+                }));
+
                 setSuccess({
                     isSuccess: true,
                     message: 'Login successful!',
@@ -58,14 +72,6 @@ const Login = () => {
                 });
             }
 
-            console.log(response)
-
-            localStorage.setItem('userId', response.user.id)
-            localStorage.setItem('userRole', response.user.role)
-            localStorage.setItem('customerId', response.customerId)
-            localStorage.setItem('userName', response.user.name)
-            localStorage.setItem('userEmail', response.user.email)
-
         } catch (err: any) {
             // Логирование ошибки
             console.error("Login error:", err);  // Логируем ошибку
@@ -78,7 +84,6 @@ const Login = () => {
             });
         }
     };
-
 
     return (
         <div className='login-container'>

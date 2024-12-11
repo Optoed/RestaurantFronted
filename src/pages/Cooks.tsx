@@ -7,10 +7,9 @@ import '../assets/styles/Cooks.css'; // Импортируйте CSS-файл
 
 const CooksPage = () => {
     const [cooks, setCooks] = useState<CookType[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [showLoading, setShowLoading] = useState(true); // Новое состояние для управления видимостью полосы загрузки
+    const [showLoading, setShowLoading] = useState(true);
     const [error, setError] = useState<ErrorType>({ isError: false });
-    const [newCook, setNewCook] = useState<CookType>({ id: 0, name: '', post: '', salary: 0, rating: 0, status: '' });
+    const [newCook, setNewCook] = useState<CookType>({ id: 0, name: '', post: '', salary: 0, rating: 1, status: 'Free' });
 
     useEffect(() => {
         const fetchCooks = async () => {
@@ -26,14 +25,10 @@ const CooksPage = () => {
         };
 
         const loadData = async () => {
-            await fetchCooks(); // Ждем завершения загрузки данных
-            // Установите таймер для скрытия полосы загрузки через 2-3 секунды
+            await fetchCooks();
             const timer = setTimeout(() => {
                 setShowLoading(false);
-                setLoading(false); // Устанавливаем loading в false после таймера
             }, 1000); // 1 секунда
-
-            // Очистите таймер при размонтировании компонента
             return () => clearTimeout(timer);
         };
 
@@ -44,7 +39,7 @@ const CooksPage = () => {
         try {
             const response = await addCook(newCook);
             setCooks([...cooks, response.data]);
-            setNewCook({ id: 0, name: '', post: '', salary: 0, rating: 0, status: '' });
+            setNewCook({ id: 0, name: '', post: '', salary: 0, rating: 1, status: 'Free' }); // Reset to default values
         } catch (err) {
             setError({
                 isError: true,
@@ -55,66 +50,86 @@ const CooksPage = () => {
 
     return (
         <div className="container">
-            {showLoading && <LinearProgress />} {/* Показываем полосу загрузки только если showLoading true */}
+            {showLoading && <LinearProgress />}
             {!showLoading && (
                 <div>
+                    <h1 className="title">Добавить повара</h1>
                     <div className="input-group">
-                        <input
-                            type="text"
-                            placeholder="Name"
-                            value={newCook.name}
-                            onChange={(e) => setNewCook({ ...newCook, name: e.target.value })}
-                            required
-                            className="input-field"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Post"
-                            value={newCook.post}
-                            onChange={(e) => setNewCook({ ...newCook, post: e.target.value })}
-                            required
-                            className="input-field"
-                        />
-                        <input
-                            type="number"
-                            placeholder="Salary"
-                            value={newCook.salary}
-                            onChange={(e) => setNewCook({ ...newCook, salary: Number(e.target.value) })}
-                            required
-                            className="input-field"
-                        />
-                        <input
-                            type="number"
-                            placeholder="Rating"
-                            value={newCook.rating}
-                            onChange={(e) => setNewCook({ ...newCook, rating: Number(e.target.value) })}
-                            required
-                            className="input-field"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Status"
-                            value={newCook.status}
-                            onChange={(e) => setNewCook({ ...newCook, status: e.target.value })}
-                            required
-                            className="input-field"
-                        />
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Введите имя"
+                                value={newCook.name}
+                                onChange={(e) => setNewCook({ ...newCook, name: e.target.value })}
+                                required
+                                className="input-field"
+                            />
+                            Имя
+                        </div>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Введите должность"
+                                value={newCook.post}
+                                onChange={(e) => setNewCook({ ...newCook, post: e.target.value })}
+                                required
+                                className="input-field"
+                            />
+                            Должность
+                        </div>
+                        <div>
+                            <input
+                                type="number"
+                                placeholder="Введите зарплату"
+                                value={newCook.salary}
+                                onChange={(e) => setNewCook({ ...newCook, salary: Number(e.target.value) })}
+                                required
+                                className="input-field"
+                            />
+                            Зарплата
+                        </div>
+                        <div>
+                            <select
+                                value={newCook.rating}
+                                onChange={(e) => setNewCook({ ...newCook, rating: Number(e.target.value) })}
+                                className="input-field"
+                            >
+                                <option value={1}>1</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                                <option value={5}>5</option>
+                            </select>
+                            Рейтинг
+                        </div>
+                        <div>
+                            <select
+                                value={newCook.status}
+                                onChange={(e) => setNewCook({ ...newCook, status: e.target.value })}
+                                className="input-field"
+                            >
+                                <option value="Free">Free</option>
+                                <option value="Busy">Busy</option>
+                            </select>
+                            Статус
+                        </div>
                         <button className="add-button" onClick={handleAddCook}>Добавить повара</button>
                     </div>
                     <h1 className="title">Список поваров</h1>
                     <ul className="cook-list">
                         {cooks.map(cook => (
                             <li key={cook.id} className="cook-item">
-                                <strong>Name:</strong> {cook.name} <br />
-                                <strong>Post:</strong> {cook.post}
-                                <strong>Salary:</strong> {cook.salary} <br />
-                                <strong>Rating:</strong> {cook.rating} <br />
-                                <strong>Status:</strong> {cook.status}
+                                <strong>Имя:</strong> {cook.name} <br />
+                                <strong>Должность:</strong> {cook.post} <br />
+                                <strong>Зарплата:</strong> {cook.salary} <br />
+                                <strong>Рейтинг:</strong> {cook.rating} <br />
+                                <strong>Статус:</strong> {cook.status}
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
+            {error.isError && <div className="error-message">{error.message}</div>}
         </div>
     );
 };
