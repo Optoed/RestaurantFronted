@@ -42,3 +42,21 @@
     color: #007bff;
     /* Bootstrap primary color */
 }
+
+
+.orders-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.order-card {
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.orders-title {
+    text-align: center;
+    margin-bottom: 20px;
+}

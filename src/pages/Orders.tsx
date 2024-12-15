@@ -1,110 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import { OrderType } from '../types/orderType';
-import { getOrders, makeNewOrder } from '../service/ordersService';
-import { LinearProgress, Button, Snackbar } from '@mui/material'; // Import Snackbar for error messages
+import { getDetailedOrders } from '../service/ordersService';
+import { LinearProgress, Snackbar, Card, CardContent, Typography, List, ListItem, ListItemText } from '@mui/material';
 import '../assets/styles/Orders.css';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { ErrorType } from '../types/errorType';
+
+interface GroupedOrder {
+    id_order: number;
+    status: string;
+    total_cost: number;
+    order_date: string;
+    id_customer: number;
+    customer_name: string;
+    dishes: {
+        dish_name: string;
+        dish_cost: number;
+        cook_name: string;
+    }[];
+}
 
 const Orders = () => {
     const [orders, setOrders] = useState<OrderType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showLoading, setShowLoading] = useState<boolean>(true);
-    const [error, setError] = useState<ErrorType>({ isError: false });
-    const [newOrder, setNewOrder] = useState({
-        id: 1,
-        id_waiter: 1,
-        id_customer: 1,
-        total_cost: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
-        status: 'Pending',
-    });
+    const [error, setError] = useState<{ isError: boolean; message?: string }>({ isError: false });
 
-    // Получаем данные из Redux
-    const userToken = useSelector((state: RootState) => state.auth.userToken);
-    const userRole = useSelector((state: RootState) => state.profile.role); // Предполагается, что вы сохраняете роль в профиле
-    const customerId = useSelector((state: RootState) => state.profile.id_customer); // Предполагается, что вы сохраняете id_customer в профиле
+    const userToken = localStorage.getItem('authToken') || '';
+    const userRole = localStorage.getItem('userRole') || '';
+    const customerId = Number(localStorage.getItem('customerId')) || 1;
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await getOrders(userToken, userRole, customerId);
+                const response = await getDetailedOrders(userToken, userRole, customerId);
                 setOrders(response.data);
             } catch (err) {
                 setError({
                     isError: true,
                     message: 'Failed to fetch orders. Please try again later.',
-                    code: '500',
-                    isOpenModal: true,
                 });
             } finally {
-                const timer = setTimeout(() => {
-                    setShowLoading(false);
-                    setLoading(false);
-                }, 1000);
-                return () => clearTimeout(timer);
+                setShowLoading(false);
+                setLoading(false);
             }
         };
 
         fetchOrders();
-    }, [userToken, userRole, customerId]); // Добавьте зависимости
 
-    const handleCreateOrder = async () => {
-        try {
-            const response = await makeNewOrder(newOrder, userToken, customerId);
-            setOrders((prevOrders) => [...prevOrders, response.data]);
-            setNewOrder({
-                id: 1,
-                id_waiter: 1,
-                id_customer: 1,
-                total_cost: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
-                status: 'Pending',
-            });
-        } catch (err) {
-            setError({
-                isError: true,
-                message: 'Failed to create order. Please try again later.',
-                code: '500',
-                isOpenModal: true,
-            });
-        }
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setNewOrder((prevOrder) => ({
-            ...prevOrder,
-            [name]: value,
-        }));
-    };
+        return () => {
+            setOrders([]); // Optionally clear orders on unmount
+        };
+    }, [userToken, userRole, customerId]);
 
     const handleCloseSnackbar = () => {
         setError({ ...error, isError: false });
     };
+
+    // Группировка заказов по id_order
+    const groupedOrders = orders.reduce<Record<number, GroupedOrder>>((acc, order) => {
+        const { id_order } = order;
+        if (!acc[id_order]) {
+            acc[id_order] = {
+                id_order,
+                status: order.status,
+                total_cost: order.total_cost,
+                order_date: order.order_date,
+                id_customer: order.id_customer,
+                customer_name: order.customer_name,
+                dishes: [],
+            };
+        }
+        acc[id_order].dishes.push({
+            dish_name: order.dish_name,
+            dish_cost: order.dish_cost,
+            cook_name: order.cook_name,
+        });
+        return acc;
+    }, {});
+
+    const orderList = Object.values(groupedOrders);
 
     return (
         <div className="orders-container">
             {showLoading && <LinearProgress />}
             {!showLoading && (
                 <>
-                    <h1 className="orders-title">Your Orders</h1>
-                    <p className="orders-message">Here you can view your orders.</p>
-                    <div className="new-order-form">
-                        <h2>Create New Order</h2>
-                        <Button variant="contained" onClick={handleCreateOrder} className='create-order-button'>
-                            Make new order
-                        </Button>
-                    </div>
-                    {orders.length === 0 ? (
-                        <p>No orders found.</p>
+                    <Typography variant="h4" className="orders-title" gutterBottom>
+                        Your Orders
+                    </Typography>
+                    {orderList.length === 0 ? (
+                        <Typography variant="h6">No orders found.</Typography>
                     ) : (
-                        <ul className="orders-list">
-                            {orders.map((order) => (
-                                <li key={order.id} className="orders-list-item">
-                                    Order #{order.id}: Total Cost: {order.total_cost} - Status: {order.status}
-                                </li>
+                        <List>
+                            {orderList.map((order) => (
+                                <Card key={order.id_order} variant="outlined" className="order-card">
+                                    <CardContent>
+                                        <Typography variant="h5">
+                                            Order #{order.id_order} - Customer: {order.customer_name} (ID: {order.id_customer})
+                                        </Typography>
+                                        <Typography color="textSecondary">
+                                            Status: {order.status} - Total Cost: {order.total_cost} - Order Date: {new Date(order.order_date).toLocaleString()}
+                                        </Typography>
+                                        <List>
+                                            {order.dishes.map((dish, index) => (
+                                                <ListItem key={index}>
+                                                    <ListItemText
+                                                        primary={dish.dish_name}
+                                                        secondary={`Cost: ${dish.dish_cost} - Cook: ${dish.cook_name}`}
+                                                    />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </CardContent>
+                                </Card>
                             ))}
-                        </ul>
+                        </List>
                     )}
                 </>
             )}

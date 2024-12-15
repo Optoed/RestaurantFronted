@@ -1,6 +1,38 @@
 import api from "../api";
 import { OrderType } from "../types/orderType";
 
+export const getDetailedOrders = async (userToken: string, userRole: string, customerId: number): Promise<{ data: OrderType[] }> => {
+    if (!userToken || !userRole || !customerId) {
+        throw new Error('No authToken or user information');
+    }
+
+    console.log('userToken = ', userToken)
+    console.log('userRole = ', userRole)
+    console.log('customerId = ', customerId)
+
+    try {
+        if (userRole === "user") {
+            const response = await api.get('/orders_by_customer_id/' + customerId, {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+            return { data: response.data };
+        } else if (userRole === "admin") {
+            const response = await api.get('/all_detailed_orders', {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+            return { data: response.data };
+        } else {
+            throw new Error('Unexpected role');
+        }
+    } catch (error) {
+        throw new Error('Error fetching orders');
+    }
+};
+
 export const getOrders = async (userToken: string, userRole: string, customerId: number): Promise<{ data: OrderType[] }> => {
     if (!userToken || !userRole || !customerId) {
         throw new Error('No authToken or user information');
