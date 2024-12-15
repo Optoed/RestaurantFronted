@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { loginUser } from '../service/loginService'; // Функция для отправки данных на сервер
+import { loginUser } from '../service/loginService';
 import { ErrorType } from '../types/errorType';
 import { SuccessType } from '../types/successType';
-import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
-import { useDispatch } from 'react-redux'; // Импортируем useDispatch
-import { setAuthToken, clearAuthToken } from '../features/auth/authSlice'; // Импортируем действия из authSlice
-import { setProfile } from '../features/profile/profileSlice'; // Импортируем действия из profileSlice
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setAuthToken, clearAuthToken } from '../features/auth/authSlice';
+import { setProfile } from '../features/profile/profileSlice';
 import '../assets/styles/Login.css';
 
 const Login = () => {
@@ -14,13 +14,13 @@ const Login = () => {
     const [error, setError] = useState<ErrorType>({ isError: false });
     const [success, setSuccess] = useState<SuccessType>({ isSuccess: false });
 
-    const navigate = useNavigate(); // Инициализируем navigate
-    const dispatch = useDispatch(); // Инициализируем dispatch
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); // Предотвращаем перезагрузку страницы
-        setError({ isError: false }); // Сброс ошибок перед отправкой
-        setSuccess({ isSuccess: false }); // Сбрасываем состояние успеха
+        e.preventDefault();
+        setError({ isError: false });
+        setSuccess({ isSuccess: false });
 
         // Простая валидация
         if (!email || !password) {
@@ -31,23 +31,22 @@ const Login = () => {
             return;
         }
 
-        console.log("Sending login request...", { email, password });  // Добавим логирование
+        console.log("Sending login request...", { email, password });
 
         try {
             // Отправка данных на сервер для логина
             const response = await loginUser({ email, password });
 
-            console.log("Login response:", response); // Логируем ответ от сервера
+            console.log("Login response:", response);
 
             const access_token: string = response.access_token;
             console.log("Login token = ", access_token);
 
-            // Если сервер вернул токен, сохраняем его в localStorage
             if (access_token) {
                 localStorage.setItem('authToken', access_token);
-                dispatch(setAuthToken(access_token)); // Сохраняем токен в Redux
+                dispatch(setAuthToken(access_token));
 
-                // Сохраняем данные профиля в Redux
+
                 dispatch(setProfile({
                     id: response.user.id,
                     id_customer: response.customerId,
@@ -61,10 +60,10 @@ const Login = () => {
                     message: 'Login successful!',
                 });
 
-                // Перенаправляем на страницу dashboard после успешного логина
+
                 setTimeout(() => {
-                    navigate('/dashboard'); // Перенаправляем на dashboard
-                }, 2000); // Ждем 2 секунды перед редиректом
+                    navigate('/menu');
+                }, 2000);
             } else {
                 setSuccess({
                     isSuccess: false,
@@ -73,10 +72,8 @@ const Login = () => {
             }
 
         } catch (err: any) {
-            // Логирование ошибки
-            console.error("Login error:", err);  // Логируем ошибку
+            console.error("Login error:", err);
 
-            // Если ошибка, показываем сообщение
             setError({
                 isError: true,
                 message: err.response?.data?.message || 'Login failed. Please try again.',

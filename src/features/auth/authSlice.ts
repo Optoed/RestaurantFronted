@@ -8,8 +8,8 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-    userToken: '',
-    isAuthenticated: false,
+    userToken: localStorage.getItem('userToken') || '', // Получаем токен из localStorage
+    isAuthenticated: !!localStorage.getItem('userToken'), // Проверяем наличие токена
 };
 
 const authSlice = createSlice({
@@ -19,10 +19,12 @@ const authSlice = createSlice({
         setAuthToken(state, action: PayloadAction<string>) {
             state.userToken = action.payload;
             state.isAuthenticated = true;
+            localStorage.setItem('userToken', action.payload); // Сохраняем токен в localStorage
         },
         clearAuthToken(state) {
             state.userToken = '';
             state.isAuthenticated = false;
+            localStorage.removeItem('userToken'); // Удаляем токен из localStorage
         },
     },
 });

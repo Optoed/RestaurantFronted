@@ -1,17 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAuthToken } from '../features/auth/authSlice'; // Adjust the import based on your file structure
+import { clearAuthToken, selectIsAuthenticated } from '../features/auth/authSlice'; // Импортируйте селектор
 import '../assets/styles/Navbar.css';
 
 const Navbar: React.FC = () => {
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated); // Adjust the type based on your RootState
+    const isAuthenticated = useSelector(selectIsAuthenticated); // Используйте селектор
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         dispatch(clearAuthToken());
-        localStorage.removeItem('userToken'); // Clear the token from localStorage
-        // Optionally, redirect to home or login page after logout
+        navigate('/login'); // Перенаправляем на страницу входа
     };
 
     return (
