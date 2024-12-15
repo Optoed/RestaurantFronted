@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearAuthToken, selectIsAuthenticated } from '../features/auth/authSlice'; // Импортируйте селектор
 import '../assets/styles/Navbar.css';
-import { selectUserRole } from '../features/profile/profileSlice';
+import { clearProfile, selectUserRole } from '../features/profile/profileSlice';
 
 const Navbar: React.FC = () => {
     const dispatch = useDispatch();
@@ -16,28 +16,30 @@ const Navbar: React.FC = () => {
 
     const handleLogout = () => {
         dispatch(clearAuthToken());
+        dispatch(clearProfile());
+        localStorage.clear();
         navigate('/login'); // Перенаправляем на страницу входа
     };
 
     return (
         <nav className="navbar">
-            <div className="navbar-brand">Restaurant "Become Overman"</div>
+            <div className="navbar-brand">Ресторан "Become Overman"</div>
             <ul className="navbar-links">
-                <li><Link to="/">Home</Link></li>
+                <li><Link to="/">Главная страница</Link></li>
                 {!isAuthenticated && (
                     <>
-                        <li><Link to="/login">Login</Link></li>
-                        <li><Link to="/register">Register</Link></li>
+                        <li><Link to="/login">Авторизация</Link></li>
+                        <li><Link to="/register">Регистрация</Link></li>
                     </>
                 )}
                 {isAuthenticated && (
                     <>
-                        {isAdmin && (<li><Link to="/dashboard">Dashboard</Link></li>)}
-                        <li><Link to="/profile">Profile</Link></li>
-                        <li><Link to="/orders">Orders</Link></li>
-                        <li><Link to="/menu">Menu</Link></li>
-                        <li><Link to="/cooks">Cooks</Link></li>
-                        <li><button onClick={handleLogout}>Logout</button></li>
+                        {isAdmin && (<li><Link to="/dashboard">Пользователи</Link></li>)}
+                        <li><Link to="/profile">Профиль</Link></li>
+                        <li><Link to="/orders">Заказы</Link></li>
+                        <li><Link to="/menu">Меню</Link></li>
+                        <li><Link to="/cooks">Повара</Link></li>
+                        <li><button className='logout-button' onClick={handleLogout}>Выйти из аккаунта</button></li>
                     </>
                 )}
             </ul>

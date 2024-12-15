@@ -36,7 +36,7 @@ const Orders = () => {
             } catch (err) {
                 setError({
                     isError: true,
-                    message: 'Failed to fetch orders. Please try again later.',
+                    message: 'Не удалось получить заказы. Пожалуйста, попробуйте позже.',
                 });
             } finally {
                 setShowLoading(false);
@@ -47,7 +47,7 @@ const Orders = () => {
         fetchOrders();
 
         return () => {
-            setOrders([]); // Optionally clear orders on unmount
+            setOrders([]); // Опционально очищаем заказы при размонтировании
         };
     }, [userToken, userRole, customerId]);
 
@@ -85,27 +85,27 @@ const Orders = () => {
             {!showLoading && (
                 <>
                     <Typography variant="h4" className="orders-title" gutterBottom>
-                        Your Orders
+                        Ваши заказы
                     </Typography>
                     {orderList.length === 0 ? (
-                        <Typography variant="h6">No orders found.</Typography>
+                        <Typography variant="h6">Заказы не найдены.</Typography>
                     ) : (
                         <List>
                             {orderList.map((order) => (
                                 <Card key={order.id_order} variant="outlined" className="order-card">
                                     <CardContent>
                                         <Typography variant="h5">
-                                            Order #{order.id_order} - Customer: {order.customer_name} (ID: {order.id_customer})
+                                            Заказ #{order.id_order} - Клиент: {order.customer_name} (ID: {order.id_customer})
                                         </Typography>
                                         <Typography color="textSecondary">
-                                            Status: {order.status} - Total Cost: {order.total_cost} - Order Date: {new Date(order.order_date).toLocaleString()}
+                                            Статус: {order.status} - Общая стоимость: {order.total_cost} - Дата заказа: {new Date(order.order_date).toLocaleString()}
                                         </Typography>
                                         <List>
                                             {order.dishes.map((dish, index) => (
                                                 <ListItem key={index}>
                                                     <ListItemText
                                                         primary={dish.dish_name}
-                                                        secondary={`Cost: ${dish.dish_cost} - Cook: ${dish.cook_name}`}
+                                                        secondary={`Стоимость: ${dish.dish_cost} - Повар: ${dish.cook_name}`}
                                                     />
                                                 </ListItem>
                                             ))}

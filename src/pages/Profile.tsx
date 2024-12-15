@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { UserType } from '../types/userType'; // Импортируйте тип пользователя
 import { ErrorType } from '../types/errorType'; // Импортируйте тип ошибки
+import '../assets/styles/Profile.css'; // Импортируйте CSS файл для стилей
 
 const Profile = () => {
     const [user, setUser] = useState<UserType>(); // Состояние для хранения данных пользователя
@@ -16,7 +17,7 @@ const Profile = () => {
                 const userRole = localStorage.getItem('userRole');
 
                 if (!userId || !userName) {
-                    throw new Error("User  data not found in localStorage");
+                    throw new Error("Данные пользователя не найдены в localStorage");
                 }
 
                 const userData: UserType = {
@@ -28,7 +29,7 @@ const Profile = () => {
 
                 setUser(userData);
             } catch (err) {
-                setError({ isError: true, message: "Something goes wrong" }); // Установите сообщение об ошибке
+                setError({ isError: true, message: "Что-то пошло не так" }); // Установите сообщение об ошибке
             } finally {
                 setLoading(false); // Установите состояние загрузки в false
             }
@@ -37,29 +38,25 @@ const Profile = () => {
         fetchUser();
     }, []);
 
-
     if (loading) {
-        return <div>Loading...</div>; // Показать индикатор загрузки
+        return <div>Загрузка...</div>; // Показать индикатор загрузки
     }
 
-
     if (!user) {
-        return <div>No user data available</div>; // Если данных о пользователе нет
+        return <div>Нет доступных данных о пользователе</div>; // Если данных о пользователе нет
     }
 
     return (
-        <div>
-            <h1>Your Profile</h1>
-            <p>Here you can view your profile.</p>
-            <div>
-                <h3>User Information:</h3>
-                <p><strong>Name:</strong> {user.name}</p>
+        <div className="profile-container">
+            <h1>Ваш профиль</h1>
+            <p>Здесь вы можете просмотреть свой профиль.</p>
+            <div className="user-info">
+                <h3>Информация о пользователе:</h3>
+                <p><strong>Имя:</strong> {user.name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
+                <p><strong>Роль:</strong> {user.role}</p>
                 {/* Добавьте другие поля, если необходимо */}
             </div>
-
-            {/* <button onClick={addNewUser}></button> */}
         </div>
     );
 };

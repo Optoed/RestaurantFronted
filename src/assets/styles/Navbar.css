@@ -1,36 +1,70 @@
 .navbar {
     display: flex;
     justify-content: space-between;
+    /* Разделяет элементы по краям */
     align-items: center;
-    background-color: #343a40;
-    /* Dark background */
-    padding: 1rem;
+    /* Выравнивает элементы по вертикали */
+    padding: 10px 20px;
+    background-color: hsl(140, 3%, 18%);
+    /* Зеленый цвет для навигационной панели */
+    color: white;
 }
 
 .navbar-brand {
-    color: #ffffff;
-    /* White text */
-    font-size: 1.5rem;
+    font-size: 1.5em;
+    font-weight: bold;
 }
 
 .navbar-links {
     list-style: none;
+    /* Убирает маркеры списка */
     display: flex;
-    gap: 1rem;
-    /* Space between links */
+    /* Используем flexbox для выравнивания */
+    gap: 15px;
+    /* Отступы между элементами */
 }
 
 .navbar-links li {
-    display: inline;
+    display: flex;
+    /* Убедитесь, что элементы списка также являются flex-контейнерами */
+    align-items: center;
+    /* Выравнивание по центру */
 }
 
 .navbar-links a {
-    color: #ffffff;
-    /* White text */
+    color: white;
+    /* Цвет ссылок */
     text-decoration: none;
+    /* Убираем подчеркивание */
+    padding: 5px 10px;
+    /* Отступы для ссылок */
+    transition: background-color 0.3s;
+    /* Плавный переход для фона */
 }
 
 .navbar-links a:hover {
-    color: #17a2b8;
-    /* Change color on hover */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Эффект при наведении */
+}
+
+.logout-button {
+    background: none;
+    /* Убираем фон */
+    border: none;
+    /* Убираем границу */
+    color: white;
+    /* Цвет текста */
+    cursor: pointer;
+    /* Указатель при наведении */
+    font-size: 1em;
+    /* Размер шрифта */
+    padding: 5px 10px;
+    /* Отступы для кнопки */
+    transition: background-color 0.3s;
+    /* Плавный переход для фона */
+}
+
+.logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Эффект при наведении на кнопку */
 }
