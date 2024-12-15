@@ -39,6 +39,8 @@ const Login = () => {
 
             console.log("Login response:", response);
 
+            console.log(response.customerId)
+
             const access_token: string = response.access_token;
             console.log("Login token = ", access_token);
 
@@ -47,7 +49,7 @@ const Login = () => {
                 dispatch(setAuthToken(access_token));
 
                 localStorage.setItem('userId', response.user.id)
-                localStorage.setItem('customerId', response.user.customerId)
+                localStorage.setItem('customerId', response.customerId)
                 localStorage.setItem('userName', response.user.name)
                 localStorage.setItem('userEmail', response.user.email)
                 localStorage.setItem('userRole', response.user.role)

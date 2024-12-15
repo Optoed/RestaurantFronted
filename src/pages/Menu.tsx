@@ -4,6 +4,8 @@ import { DishType } from '../types/dishType';
 import { LinearProgress } from '@mui/material';
 import '../assets/styles/Menu.css';
 import '../assets/styles/Button.css';
+import { error } from 'console';
+import { newOrder } from '../service/ordersService';
 
 const Menu = () => {
     const [dishes, setDishes] = useState<DishType[]>([]);
@@ -21,6 +23,9 @@ const Menu = () => {
                 setDishes(dishesResponse.data);
                 const role = localStorage.getItem('userRole');
                 setIsAdmin(role === 'admin');
+
+                console.log("menu data user: ", localStorage.getItem('customerId'), localStorage.getItem('userId'))
+
             } catch (error) {
                 console.error("Ошибка при получении данных", error);
             } finally {
@@ -81,10 +86,42 @@ const Menu = () => {
         });
     };
 
-    const handleCheckout = () => {
-        console.log('Оформление заказа:', Object.values(cart).map(item => ({ ...item.dish, quantity: item.quantity })));
-        alert('Ваш заказ оформлен!');
-        setCart({});
+    const handleCheckout = async () => {
+        try {
+            const authToken = localStorage.getItem('authToken');
+            const customerId = Number(localStorage.getItem('customerId'));
+            const userId = Number(localStorage.getItem('userId'));
+            const userRole = localStorage.getItem('userRole') || '';
+
+            console.log(authToken, customerId, userId, userRole);
+
+            if (!authToken || !customerId || !userId) {
+                setMessage('Ошибка авторизации. Пожалуйста, авторизуйтесь заново.');
+                setShowMessage(true);
+                setTimeout(() => {
+                    setShowMessage(false);
+                    setMessage('');
+                }, 3000);
+                return; // Если нет авторизационных данных, выходим из функции
+            }
+
+            const response = await newOrder(authToken, customerId, userId, userRole, totalCost, cart);
+            if (!response.ok) {
+                throw new Error('Ошибка при оформлении заказа');
+            }
+
+            console.log('Оформление заказа:', Object.values(cart).map(item => ({ ...item.dish, quantity: item.quantity })));
+            alert('Ваш заказ оформлен!');
+            setCart({});
+        } catch (error) {
+            console.error('Ошибка:', error);
+            setMessage('Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
+            setShowMessage(true);
+            setTimeout(() => {
+                setShowMessage(false);
+                setMessage('');
+            }, 3000);
+        }
     };
 
     const totalCost = Object.values(cart).reduce((total, item) => total + item.dish.cost * item.quantity, 0);

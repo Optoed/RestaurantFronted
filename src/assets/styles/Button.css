@@ -6,13 +6,13 @@ button {
     border-radius: 4px;
     padding: 10px 15px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.5s, transform 0.2s;
     font-size: 1rem;
     /* Увеличиваем размер шрифта */
 }
 
 button:hover {
-    background-color: #33373c;
+    background-color: #4abf46;
     /* Темнее при наведении */
     /* transform: scale(1.001); */
     /* Увеличение при наведении */
