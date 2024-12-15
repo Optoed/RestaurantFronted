@@ -3,11 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearAuthToken, selectIsAuthenticated } from '../features/auth/authSlice'; // Импортируйте селектор
 import '../assets/styles/Navbar.css';
+import { selectUserRole } from '../features/profile/profileSlice';
 
 const Navbar: React.FC = () => {
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector(selectIsAuthenticated); // Используйте селектор
+    const isAuthenticated = useSelector(selectIsAuthenticated);
     const navigate = useNavigate();
+
+    const role = useSelector(selectUserRole);
+    console.log(role);
+    const isAdmin = role === 'admin'
 
     const handleLogout = () => {
         dispatch(clearAuthToken());
@@ -27,7 +32,7 @@ const Navbar: React.FC = () => {
                 )}
                 {isAuthenticated && (
                     <>
-                        <li><Link to="/dashboard">Dashboard</Link></li>
+                        {isAdmin && (<li><Link to="/dashboard">Dashboard</Link></li>)}
                         <li><Link to="/profile">Profile</Link></li>
                         <li><Link to="/orders">Orders</Link></li>
                         <li><Link to="/menu">Menu</Link></li>

@@ -37,6 +37,7 @@ const Profile = () => {
         fetchUser();
     }, []);
 
+
     if (loading) {
         return <div>Loading...</div>; // Показать индикатор загрузки
     }
@@ -49,7 +50,7 @@ const Profile = () => {
     return (
         <div>
             <h1>Your Profile</h1>
-            <p>Here you can view and edit your profile.</p>
+            <p>Here you can view your profile.</p>
             <div>
                 <h3>User Information:</h3>
                 <p><strong>Name:</strong> {user.name}</p>
@@ -57,9 +58,8 @@ const Profile = () => {
                 <p><strong>Role:</strong> {user.role}</p>
                 {/* Добавьте другие поля, если необходимо */}
             </div>
-            <button onClick={() => alert('Edit functionality not implemented yet.')}>
-                Edit Profile
-            </button>
+
+            {/* <button onClick={addNewUser}></button> */}
         </div>
     );
 };

@@ -8,6 +8,7 @@ const Dashboard = () => {
     const [users, setUsers] = useState<UserType[]>([]);
     const [loading, setLoading] = useState(true);
     const [showLoading, setShowLoading] = useState(true); // Новое состояние для управления видимостью полосы загрузки
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {

@@ -101,7 +101,7 @@ const Orders = () => {
                         <ul className="orders-list">
                             {orders.map((order) => (
                                 <li key={order.id} className="orders-list-item">
-                                    Order #{order.id}: Total Cost: ${order.total_cost} - Status: {order.status}
+                                    Order #{order.id}: Total Cost: {order.total_cost} - Status: {order.status}
                                 </li>
                             ))}
                         </ul>

@@ -46,6 +46,11 @@ const Login = () => {
                 localStorage.setItem('authToken', access_token);
                 dispatch(setAuthToken(access_token));
 
+                localStorage.setItem('userId', response.user.id)
+                localStorage.setItem('customerId', response.user.customerId)
+                localStorage.setItem('userName', response.user.name)
+                localStorage.setItem('userEmail', response.user.email)
+                localStorage.setItem('userRole', response.user.role)
 
                 dispatch(setProfile({
                     id: response.user.id,
