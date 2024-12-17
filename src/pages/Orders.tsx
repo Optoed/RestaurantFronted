@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { OrderType } from '../types/orderType';
-import { getDetailedOrders } from '../service/ordersService';
-import { LinearProgress, Snackbar, Card, CardContent, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { getDetailedOrders, getOrdersByDateRange } from '../service/ordersService';
+import { LinearProgress, Snackbar, Card, CardContent, Typography, List, ListItem, ListItemText, TextField, Button } from '@mui/material';
 import '../assets/styles/Orders.css';
+import { start } from 'repl';
 
 interface GroupedOrder {
     id_order: number;
@@ -23,6 +24,11 @@ const Orders = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [showLoading, setShowLoading] = useState<boolean>(true);
     const [error, setError] = useState<{ isError: boolean; message?: string }>({ isError: false });
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [startDate, setStartDate] = useState<string>('');
+    const [endDate, setEndDate] = useState<string>('');
+
+    const [successMessage, setSuccessMessage] = useState<{ isSuccess: boolean; message?: string }>({ isSuccess: false });
 
     const userToken = localStorage.getItem('authToken') || '';
     const userRole = localStorage.getItem('userRole') || '';
@@ -55,6 +61,54 @@ const Orders = () => {
         setError({ ...error, isError: false });
     };
 
+    const convertToCSV = (data: OrderType[]) => {
+        const header = Object.keys(data[0]).join(','); // Получаем заголовки из первого объекта
+        const rows = data.map(item => {
+            return Object.values(item).join(','); // Преобразуем каждый объект в строку
+        });
+        return [header, ...rows].join('\n'); // Объединяем заголовки и строки
+    };
+
+    const handleDownloadOrders = async () => {
+        if (!startDate || !endDate) {
+            setError({ isError: true, message: 'Пожалуйста, укажите начальную и конечную дату.' });
+            return;
+        }
+
+        try {
+            // Преобразуем даты в формат ISO
+            const startDateISO = new Date(startDate).toISOString();
+            const endDateISO = new Date(endDate).toISOString();
+
+            const customerId = String(localStorage.getItem('customerId'))
+
+            console.log(startDate, startDateISO)
+
+            const response = await getOrdersByDateRange(userToken, startDateISO, endDateISO, customerId)
+
+            // Преобразуем данные в CSV
+            const csvData = convertToCSV(response.data);
+
+            // Добавляем BOM для UTF-8
+            const bom = '\uFEFF';
+            const blob = new Blob([bom + csvData], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'orders.csv'; // Имя файла для скачивания
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+
+
+            // Успешное сообщение
+            setSuccessMessage({ isSuccess: true, message: 'Заказы успешно скачаны!' });
+        } catch (error) {
+            setError({ isError: true, message: 'Ошибка при скачивании заказов.' });
+        }
+    };
+
     // Группировка заказов по id_order
     const groupedOrders = orders.reduce<Record<number, GroupedOrder>>((acc, order) => {
         const { id_order } = order;
@@ -79,6 +133,13 @@ const Orders = () => {
 
     const orderList = Object.values(groupedOrders);
 
+    // Фильтрация заказов по названию блюда
+    const filteredOrders = orderList.filter(order =>
+        order.dishes.some(dish =>
+            dish.dish_name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
+
     return (
         <div className="orders-container">
             {showLoading && <LinearProgress />}
@@ -87,11 +148,41 @@ const Orders = () => {
                     <Typography variant="h4" className="orders-title" gutterBottom>
                         Ваши заказы
                     </Typography>
-                    {orderList.length === 0 ? (
+
+                    <div style={{ marginBottom: '16px' }}>
+                        <div>
+                            <p>начальная дата</p>
+                            <TextField
+                                type="datetime-local"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                style={{ marginRight: '8px' }}
+                            />
+                        </div>
+                        <div>
+                            <p>конечная дата</p>
+                            <TextField
+                                type="datetime-local"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                            />
+                        </div>
+                        <button onClick={handleDownloadOrders}>
+                            Получить все заказы за данный интервал времени
+                        </button>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Поиск по названию блюда"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: '100%', padding: '8px', marginBottom: '16px' }}
+                    />
+                    {filteredOrders.length === 0 ? (
                         <Typography variant="h6">Заказы не найдены.</Typography>
                     ) : (
                         <List>
-                            {orderList.map((order) => (
+                            {filteredOrders.map((order) => (
                                 <Card key={order.id_order} variant="outlined" className="order-card">
                                     <CardContent>
                                         <Typography variant="h5">
@@ -116,14 +207,22 @@ const Orders = () => {
                         </List>
                     )}
                 </>
-            )}
+            )
+            }
             <Snackbar
                 open={error.isError}
                 autoHideDuration={6000}
                 onClose={handleCloseSnackbar}
                 message={error.message}
             />
-        </div>
+
+            <Snackbar
+                open={successMessage.isSuccess}
+                autoHideDuration={6000}
+                onClose={() => setSuccessMessage({ ...successMessage, isSuccess: false })}
+                message={successMessage.message}
+            />
+        </div >
     );
 };
 

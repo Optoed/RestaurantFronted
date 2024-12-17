@@ -110,8 +110,15 @@ const Menu = () => {
                 throw new Error('Ошибка при оформлении заказа');
             }
 
+            // Установите сообщение о успешном оформлении заказа
+            setMessage('Ваш заказ успешно оформлен!');
+            setShowMessage(true);
+            setTimeout(() => {
+                setShowMessage(false);
+                setMessage('');
+            }, 3000);
+
             console.log('Оформление заказа:', Object.values(cart).map(item => ({ ...item.dish, quantity: item.quantity })));
-            alert('Ваш заказ оформлен!');
             setCart({});
         } catch (error) {
             console.error('Ошибка:', error);
@@ -152,10 +159,6 @@ const Menu = () => {
                     </div>
 
                     <h1 className="menu-title">Меню</h1>
-
-                    {/* {isAdmin && (
-                        <button className="add-dish-button">Добавить новое блюдо</button>
-                    )} */}
 
                     {showMessage && <div className="cart-message">{message}</div>}
 

@@ -34,6 +34,51 @@ export const getDetailedOrders = async (userToken: string, userRole: string, cus
 };
 
 
+export const getOrdersByDateRange = async (
+    userToken: string,
+    start_date: string,
+    end_date: string,
+    customer_id: string
+): Promise<{ data: OrderType[] }> => {
+    if (!userToken || !start_date || !end_date) {
+        throw new Error('No authToken or date range provided');
+    }
+
+    const role = localStorage.getItem('userRole')
+
+    try {
+        if (role === "admin") {
+            const response = await api.get('/all_detailed_orders_by_date_range', {
+                params: {
+                    start_date,
+                    end_date,
+                },
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+            console.log("DATA: ", response.data)
+            return { data: response.data };
+        } else {
+            const response = await api.get('/detailed_orders_by_date_range', {
+                params: {
+                    customer_id,
+                    start_date,
+                    end_date,
+                },
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+            return { data: response.data };
+        }
+
+
+    } catch (error) {
+        throw new Error('Error fetching orders by date range');
+    }
+};
+
 export const newOrder = async (
     authToken: string,
     customerId: number,
@@ -111,4 +156,3 @@ export const newOrder = async (
         throw new Error('BIG Failed to create order');
     }
 };
-
