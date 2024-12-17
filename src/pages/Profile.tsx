@@ -4,18 +4,29 @@ import { ErrorType } from '../types/errorType'; // Импортируйте ти
 import '../assets/styles/Profile.css'; // Импортируйте CSS файл для стилей
 import { registerUser } from '../service/registerService';
 import { RegisterPayload } from '../types/registerType';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearAuthToken, selectIsAuthenticated } from '../features/auth/authSlice';
+import { clearProfile, selectUserRole } from '../features/profile/profileSlice';
+import { useNavigate } from 'react-router-dom';
+
 
 const Profile = () => {
     const [user, setUser] = useState<UserType>(); // Состояние для хранения данных пользователя
     const [loading, setLoading] = useState(true); // Состояние для загрузки
     const [error, setError] = useState<ErrorType>({ isError: false }); // Состояние для ошибок
-    const [isAdmin, setIsAdmin] = useState(false);
     const [newUser, setNewUser] = useState<RegisterPayload>({ name: '', email: '', password: '', role: 'user' });
     const [successMessage, setSuccessMessage] = useState<string>(''); // Состояние для сообщения об успешной регистрации
 
+    const dispatch = useDispatch();
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const navigate = useNavigate();
+
+    const role = useSelector(selectUserRole);
+    console.log(role);
+    const isAdmin = role === 'admin'
+
     useEffect(() => {
-        const userRole = localStorage.getItem("userRole");
-        setIsAdmin(userRole === "admin");
+
 
         const fetchUser = async () => {
             try {
@@ -72,16 +83,29 @@ const Profile = () => {
         return <div>Нет доступных данных о пользователе</div>; // Если данных о пользователе нет
     }
 
+    const handleLogout = () => {
+        dispatch(clearAuthToken());
+        dispatch(clearProfile());
+        localStorage.clear();
+        navigate('/login'); // Перенаправляем на страницу входа
+    };
+
     return (
         <div className="profile-container">
             <h1>Ваш профиль</h1>
-            <p>Здесь вы можете просмотреть свой профиль.</p>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <p>Здесь вы можете просмотреть свой профиль.</p>
+            </div>
             <div className="user-info">
                 <h3>Информация о пользователе:</h3>
                 <p><strong>Имя:</strong> {user.name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
                 <p><strong>Роль:</strong> {user.role}</p>
                 {/* Добавьте другие поля, если необходимо */}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '5px' }}>
+                <button onClick={handleLogout}>Выйти из аккаунта</button>
             </div>
 
             {isAdmin && (
@@ -123,7 +147,9 @@ const Profile = () => {
                             <option value="admin">admin</option>
                         </select>
                     </div>
-                    <button onClick={handleRegister}>Зарегистрировать пользователя</button>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <button onClick={handleRegister}>Зарегистрировать пользователя</button>
+                    </div>
                 </div>
             )}
         </div>

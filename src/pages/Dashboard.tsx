@@ -37,12 +37,12 @@ const Dashboard = () => {
 
             {!showLoading && ( // Отображаем контент только если showLoading false
                 <>
-                    <h1>Dashboard</h1>
-                    <p>Welcome to your admin dashboard!</p>
+                    <h1>Пользователи</h1>
+                    <p>Ниже представлен список всех пользователей нашего приложения</p>
 
                     <div>
-                        <h3>All Users:</h3>
-                        <p>Total Users: {users.length}</p>
+                        <h3>Пользователи:</h3>
+                        <p>Всего: {users.length}</p>
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableHead>

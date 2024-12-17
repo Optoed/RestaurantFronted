@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { setAuthToken } from './features/auth/authSlice';
 import ProductsPage from './pages/Products';
 import { setProfile } from './features/profile/profileSlice';
+import WaitersPage from './pages/Waters';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/cooks" element={<CooksPage />} />
         <Route path="/products" element={<ProductsPage />} />
+        <Route path="/waiters" element={<WaitersPage />} />
       </Routes>
     </>
   );

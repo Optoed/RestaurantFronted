@@ -40,11 +40,12 @@ const Navbar: React.FC = () => {
                                 <li><Link to="/products">Ингредиенты</Link></li>
                             </>
                         )}
-                        <li><Link to="/profile">Профиль</Link></li>
                         <li><Link to="/orders">Заказы</Link></li>
                         <li><Link to="/menu">Меню</Link></li>
                         <li><Link to="/cooks">Повара</Link></li>
-                        <li><button className='logout-button' onClick={handleLogout}>Выйти из аккаунта</button></li>
+                        <li><Link to="/waiters">Официанты</Link></li>
+                        <li><Link to="/profile">Профиль</Link></li>
+                        {/* <li><button className='logout-button' onClick={handleLogout}>Выйти из аккаунта</button></li> */}
                     </>
                 )}
             </ul>

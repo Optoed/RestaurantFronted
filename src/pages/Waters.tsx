@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { getCooks, addCook } from '../service/cooksService'; // Импортируйте ваши функции
-import { CookType } from '../types/cookType'; // Импортируйте CookType
+import { getWaiters, addWaiter } from '../service/waitersService'; // Импортируйте ваши функции
+import { WaiterType } from '../types/waiterType'; // Импортируйте WaiterType
 import { ErrorType } from '../types/errorType'; // Импортируйте ErrorType
 import { LinearProgress } from '@mui/material';
-import '../assets/styles/Cooks.css'; // Импортируйте CSS-файл
+// import '../assets/styles/Cooks.css'; // Импортируйте CSS-файл
 
-const CooksPage = () => {
-    const [cooks, setCooks] = useState<CookType[]>([]);
+const WaitersPage = () => {
+    const [waiters, setWaiters] = useState<WaiterType[]>([]);
     const [showLoading, setShowLoading] = useState(true);
     const [error, setError] = useState<ErrorType>({ isError: false });
-    const [newCook, setNewCook] = useState<CookType>({ id: 0, name: '', post: '', salary: 0, rating: 1, status: 'Free' });
-    const [isAdmin, setIsAdmin] = useState(false)
+    const [newWaiter, setNewWaiter] = useState<WaiterType>({ id: 0, name: '', salary: 0, rating: 1, status: 'Free' });
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        const userRole = localStorage.getItem("userRole")
-        setIsAdmin(userRole === "admin")
+        const userRole = localStorage.getItem("userRole");
+        setIsAdmin(userRole === "admin");
 
-        const fetchCooks = async () => {
+        const fetchWaiters = async () => {
             try {
-                const response = await getCooks();
-                setCooks(response.data);
+                const response = await getWaiters();
+                setWaiters(response.data);
             } catch (err) {
                 setError({
                     isError: true,
-                    message: "Something goes wrong",
+                    message: "Что-то пошло не так",
                 });
             }
         };
 
         const loadData = async () => {
-            await fetchCooks();
+            await fetchWaiters();
             const timer = setTimeout(() => {
                 setShowLoading(false);
             }, 1000); // 1 секунда
@@ -39,11 +39,11 @@ const CooksPage = () => {
         loadData();
     }, []);
 
-    const handleAddCook = async () => {
+    const handleAddWaiter = async () => {
         try {
-            const response = await addCook(newCook);
-            setCooks([...cooks, response.data]);
-            setNewCook({ id: 0, name: '', post: '', salary: 0, rating: 1, status: 'Free' }); // Reset to default values
+            const response = await addWaiter(newWaiter);
+            setWaiters([...waiters, response.data]);
+            setNewWaiter({ id: 0, name: '', salary: 0, rating: 1, status: 'Free' }); // Сбросить значения
         } catch (err) {
             setError({
                 isError: true,
@@ -59,39 +59,26 @@ const CooksPage = () => {
                 <div>
                     {isAdmin && (
                         <div>
-                            <h1 className="title">Добавить повара</h1>
+                            <h1 className="title">Добавить официанта</h1>
                             <div className="input-group">
                                 <div>
                                     Имя
                                     <input
                                         type="text"
                                         placeholder="Введите имя"
-                                        value={newCook.name}
-                                        onChange={(e) => setNewCook({ ...newCook, name: e.target.value })}
+                                        value={newWaiter.name}
+                                        onChange={(e) => setNewWaiter({ ...newWaiter, name: e.target.value })}
                                         required
                                         className="input-field"
                                     />
-
-                                </div>
-                                <div>
-                                    Должность
-                                    <input
-                                        type="text"
-                                        placeholder="Введите должность"
-                                        value={newCook.post}
-                                        onChange={(e) => setNewCook({ ...newCook, post: e.target.value })}
-                                        required
-                                        className="input-field"
-                                    />
-
                                 </div>
                                 <div>
                                     Зарплата
                                     <input
                                         type="number"
                                         placeholder="Введите зарплату"
-                                        value={newCook.salary}
-                                        onChange={(e) => setNewCook({ ...newCook, salary: Number(e.target.value) })}
+                                        value={newWaiter.salary}
+                                        onChange={(e) => setNewWaiter({ ...newWaiter, salary: Number(e.target.value) })}
                                         required
                                         className="input-field"
                                     />
@@ -99,8 +86,8 @@ const CooksPage = () => {
                                 <div>
                                     Рейтинг
                                     <select
-                                        value={newCook.rating}
-                                        onChange={(e) => setNewCook({ ...newCook, rating: Number(e.target.value) })}
+                                        value={newWaiter.rating}
+                                        onChange={(e) => setNewWaiter({ ...newWaiter, rating: Number(e.target.value) })}
                                         className="input-field"
                                     >
                                         <option value={1}>1</option>
@@ -113,8 +100,8 @@ const CooksPage = () => {
                                 <div>
                                     Статус
                                     <select
-                                        value={newCook.status}
-                                        onChange={(e) => setNewCook({ ...newCook, status: e.target.value })}
+                                        value={newWaiter.status}
+                                        onChange={(e) => setNewWaiter({ ...newWaiter, status: e.target.value })}
                                         className="input-field"
                                     >
                                         <option value="Free">Free</option>
@@ -122,25 +109,24 @@ const CooksPage = () => {
                                     </select>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <button onClick={handleAddCook}>Добавить повара</button>
+                                    <button onClick={handleAddWaiter}>Добавить официанта</button>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    <h1 className="title">Список поваров</h1>
+                    <h1 className="title">Список официантов</h1>
                     <ul className="cook-list">
-                        {cooks.map(cook => (
-                            <li key={cook.id} className="cook-item">
-                                <strong>Имя:</strong> {cook.name} <br />
-                                <strong>Должность:</strong> {cook.post} <br />
+                        {waiters.map(waiter => (
+                            <li key={waiter.id} className="cook-item">
+                                <strong>Имя:</strong> {waiter.name} <br />
                                 {isAdmin && (
                                     <>
-                                        <strong>Зарплата:</strong> {cook.salary} <br />
+                                        <strong>Зарплата:</strong> {waiter.salary} <br />
                                     </>
                                 )}
-                                <strong>Рейтинг:</strong> {cook.rating} <br />
-                                <strong>Статус:</strong> {cook.status}
+                                <strong>Рейтинг:</strong> {waiter.rating} <br />
+                                <strong>Статус:</strong> {waiter.status}
                             </li>
                         ))}
                     </ul>
@@ -151,4 +137,4 @@ const CooksPage = () => {
     );
 };
 
-export default CooksPage;
+export default WaitersPage;

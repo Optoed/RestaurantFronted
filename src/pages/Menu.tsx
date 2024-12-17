@@ -153,9 +153,9 @@ const Menu = () => {
 
                     <h1 className="menu-title">Меню</h1>
 
-                    {isAdmin && (
+                    {/* {isAdmin && (
                         <button className="add-dish-button">Добавить новое блюдо</button>
-                    )}
+                    )} */}
 
                     {showMessage && <div className="cart-message">{message}</div>}
 

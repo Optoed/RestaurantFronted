@@ -6,6 +6,7 @@ import { getProducts, addProduct } from '../service/productsService'; // Имп�
 import { LinearProgress, Button, Snackbar } from '@mui/material'; // Импортируйте необходимые компоненты
 import { selectAuthToken } from '../features/auth/authSlice'; // Импортируйте селектор для получения токена
 import '../assets/styles/Product.css'; // Импортируйте CSS файл для стилей
+import '../assets/styles/Button.css';
 
 const ProductsPage = () => {
     const [products, setProducts] = useState<ProductType[]>([]); // Состояние для хранения списка продуктов
@@ -93,9 +94,9 @@ const ProductsPage = () => {
                     onChange={(e) => setNewProduct({ ...newProduct, cost: Number(e.target.value) })}
                     className="input-field"
                 />
-                <Button variant="contained" onClick={handleAddProduct} className="modal-add-button">
+                <button onClick={handleAddProduct}>
                     Добавить продукт
-                </Button>
+                </button>
             </div>
             {error.isError && <div className="products-error-message">{error.message}</div>} {/* Отображение сообщения об ошибке */}
             <input

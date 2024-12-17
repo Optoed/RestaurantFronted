@@ -1,7 +1,7 @@
 /* Welcome.css */
 .welcome-container {
     text-align: center;
-    margin: 50px;
+    margin: 120px;
 }
 
 .welcome-container h1 {
@@ -15,7 +15,7 @@
 }
 
 .welcome-container button {
-    margin: 10px;
+    margin: 40px;
     padding: 10px 20px;
     font-size: 1rem;
     color: white;
