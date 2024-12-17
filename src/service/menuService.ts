@@ -9,7 +9,7 @@ export const getDishes = async (): Promise<{ data: DishType[] }> => {
         const response = await api.get('/all_dishes');
         return { data: response.data };
     } catch (error) {
-        throw new Error('Error fetching users');
+        throw new Error('Error fetching dishes');
     }
 };
 
@@ -31,7 +31,7 @@ export const makeNewDish = async (dishData: DishType): Promise<{ data: DishType 
 
         return { data: response.data }; // Верните данные ответа
     } catch (error) {
-        console.error('Error creating order:', error);
-        throw new Error('Failed to create order');
+        console.error('Error creating dish:', error);
+        throw new Error('Failed to create dish');
     }
 };

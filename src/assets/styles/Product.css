@@ -1,0 +1,82 @@
+.products-page-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.products-page-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.products-search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Отступ между инпутами */
+    margin-bottom: 20px;
+}
+
+.input-field {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    /* Занимает всю ширину контейнера */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    border-color: #007bff;
+    /* Цвет рамки при фокусе */
+    outline: none;
+    /* Убираем стандартный контур */
+}
+
+.modal-add-button {
+    background-color: #007bff;
+    /* Цвет кнопки */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.modal-add-button:hover {
+    background-color: #0056b3;
+    /* Цвет кнопки при наведении */
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.products-table-header {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+}
+
+.products-table-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.products-table-cell {
+    padding: 10px;
+}

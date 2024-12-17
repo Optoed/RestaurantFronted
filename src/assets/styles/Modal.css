@@ -1,0 +1,32 @@
+/* Product.css */
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    /* Ширина модального окна */
+    background-color: white;
+    /* Фоновый цвет */
+    border: 1px solid #ccc;
+    /* Цвет границы */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* Тень */
+    padding: 20px;
+    /* Внутренние отступы */
+    border-radius: 8px;
+    /* Закругленные углы */
+    z-index: 1000;
+    /* Убедитесь, что модальное окно поверх других элементов */
+}
+
+.modal-close-button {
+    margin-top: 10px;
+    /* Отступ сверху для кнопки закрытия */
+}
+
+.modal-add-button {
+    margin-top: 10px;
+    /* Отступ сверху для кнопки добавления */
+}

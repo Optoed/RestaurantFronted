@@ -34,7 +34,12 @@ const Navbar: React.FC = () => {
                 )}
                 {isAuthenticated && (
                     <>
-                        {isAdmin && (<li><Link to="/dashboard">Пользователи</Link></li>)}
+                        {isAdmin && (
+                            <>
+                                <li><Link to="/dashboard">Пользователи</Link></li>
+                                <li><Link to="/products">Ингредиенты</Link></li>
+                            </>
+                        )}
                         <li><Link to="/profile">Профиль</Link></li>
                         <li><Link to="/orders">Заказы</Link></li>
                         <li><Link to="/menu">Меню</Link></li>

@@ -64,7 +64,7 @@ const Login = () => {
 
                 setSuccess({
                     isSuccess: true,
-                    message: 'Login successful!',
+                    message: 'Успешная авторизация, добро пожаловать!',
                 });
 
 
@@ -74,7 +74,7 @@ const Login = () => {
             } else {
                 setSuccess({
                     isSuccess: false,
-                    message: 'Troubles with login because of token..',
+                    message: 'Проблемы с токеном авторизации',
                 });
             }
 
@@ -83,7 +83,7 @@ const Login = () => {
 
             setError({
                 isError: true,
-                message: err.response?.data?.message || 'Login failed. Please try again.',
+                message: err.response?.data?.message || 'Ошибка при авторизации',
                 code: err.response?.status,
             });
         }
@@ -91,10 +91,10 @@ const Login = () => {
 
     return (
         <div className='login-container'>
-            <h1>Login</h1>
+            <h1>Авторизация</h1>
             <div>
                 <div>
-                    <label>Email</label>
+                    <label>Почта</label>
                     <input
                         type="email"
                         value={email}
@@ -103,7 +103,7 @@ const Login = () => {
                     />
                 </div>
                 <div>
-                    <label>Password</label>
+                    <label>Пароль</label>
                     <input
                         type="password"
                         value={password}
@@ -113,12 +113,12 @@ const Login = () => {
                 </div>
                 {error.isError && <p style={{ color: 'red' }}>{error.message}</p>}
                 {success.isSuccess && <p style={{ color: 'green' }}>{success.message}</p>}
-                <button onClick={handleSubmit}>Login</button>
+                <button onClick={handleSubmit}>Войти</button>
             </div>
 
             {/* Кнопка для перехода на страницу регистрации */}
             <div>
-                <button onClick={() => navigate('/register')}>Don't have an account? Register</button>
+                <button onClick={() => navigate('/register')}>Нет аккаунта? Зарегистрируйся!</button>
             </div>
         </div>
     );
