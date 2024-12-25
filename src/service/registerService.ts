@@ -1,11 +1,5 @@
 import api from '../api'; // Подключаем вашу axios настройку
-
-interface RegisterPayload {
-    name: string;
-    email: string;
-    password: string;
-    role: string;
-}
+import { RegisterPayload } from '../types/registerType'
 
 export const registerUser = async (payload: RegisterPayload) => {
     try {

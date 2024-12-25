@@ -1,51 +1,120 @@
-.cart-message {
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #d4edda;
-    /* Зеленый фон */
-    color: #155724;
-    /* Темно-зеленый текст */
-    border: 1px solid #c3e6cb;
-    /* Зеленая рамка */
-    border-radius: 5px;
-}
-
 .menu-container {
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
 }
 
 .menu-title {
+    text-align: center;
+    margin-bottom: 20px;
     font-size: 2em;
-    margin-bottom: 10px;
+    color: #333;
+}
+
+.cart-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item h3 {
+    font-size: 1.2rem;
+    /* Уменьшаем размер заголовка */
+    margin: 0;
+}
+
+.cart-item p {
+    margin: 0;
+}
+
+.remove-button {
+    background-color: #ff4d4d;
+    /* Красный цвет для кнопки */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+    background-color: #ff1a1a;
+    /* Темнее при наведении */
+}
+
+.total-cost {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.menu-title {
+    font-size: 1.5rem;
+    /* Уменьшаем размер заголовка меню */
+    margin: 20px 0;
 }
 
 .menu-item {
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     padding: 10px;
     margin: 10px 0;
     background-color: #fff;
 }
 
-.menu-item h2 {
-    margin: 0;
-}
-
-.menu-item p {
-    margin: 5px 0;
-}
-
 .add-dish-button {
-    margin: 20px 0;
-    padding: 10px 15px;
-    background-color: #28a745;
+    background-color: #4CAF50;
+    /* Зеленый цвет для кнопки добавления */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    padding: 10px 15px;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
 .add-dish-button:hover {
-    background-color: #218838;
+    background-color: #45a049;
+    /* Темнее при наведении */
+}
+
+.cart-message {
+    color: #4CAF50;
+    /* Зеленый цвет для сообщений */
+    margin-top: 10px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item h3 {
+    font-size: 1.2rem;
+    /* Уменьшаем размер заголовка */
+    margin: 0;
+    flex: 1;
+    /* Занимает оставшееся пространство */
+}
+
+.cart-item p {
+    margin: 0;
+    flex: 1;
+    /* Занимает оставшееся пространство */
+    text-align: center;
+    /* Центрируем текст */
 }

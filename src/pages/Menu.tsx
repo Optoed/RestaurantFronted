@@ -1,36 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { getDishes } from '../service/menuService';
 import { DishType } from '../types/dishType';
-import { LinearProgress } from '@mui/material'; // Импортируйте LinearProgress
+import { LinearProgress } from '@mui/material';
 import '../assets/styles/Menu.css';
+import '../assets/styles/Button.css';
+import { error } from 'console';
+import { newOrder } from '../service/ordersService';
 
 const Menu = () => {
     const [dishes, setDishes] = useState<DishType[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showLoading, setShowLoading] = useState(true); // Новое состояние для управления видимостью полосы загрузки
-    const [isAdmin, setIsAdmin] = useState(false); // Состояние для роли администратора
-    const [message, setMessage] = useState(''); // Состояние для сообщения
-    const [showMessage, setShowMessage] = useState(false); // Состояние для отображения сообщения
+    const [showLoading, setShowLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [cart, setCart] = useState<{ [key: number]: { dish: DishType; quantity: number } }>({});
+    const [message, setMessage] = useState('');
+    const [showMessage, setShowMessage] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const dishesResponse = await getDishes();
                 setDishes(dishesResponse.data);
-
-                // Получаем информацию о текущем пользователе
                 const role = localStorage.getItem('userRole');
-                setIsAdmin(role === 'admin'); // Устанавливаем isAdmin в зависимости от роли
+                setIsAdmin(role === 'admin');
+
+                console.log("menu data user: ", localStorage.getItem('customerId'), localStorage.getItem('userId'))
+
             } catch (error) {
-                console.error("Error fetching data", error);
+                console.error("Ошибка при получении данных", error);
             } finally {
-                // Установите таймер для скрытия полосы загрузки через 1 секунду
                 const timer = setTimeout(() => {
                     setShowLoading(false);
                     setLoading(false);
-                }, 1000); // 1 секунда
-
-                // Очистите таймер при размонтировании компонента
+                }, 1000);
                 return () => clearTimeout(timer);
             }
         };
@@ -39,39 +41,133 @@ const Menu = () => {
     }, []);
 
     const handleAddToCart = (dish: DishType) => {
-        // Логика добавления блюда в корзину
-        console.log(`Added ${dish.name} to cart`);
-        setMessage(`"${dish.name}" добавлено в корзину!`); // Устанавливаем сообщение
-        setShowMessage(true); // Показываем сообщение
-
-        // Скрываем сообщение через 3 секунды
+        setCart((prevCart) => {
+            const currentDish = prevCart[dish.id];
+            if (currentDish) {
+                return {
+                    ...prevCart,
+                    [dish.id]: { dish, quantity: currentDish.quantity + 1 },
+                };
+            } else {
+                return {
+                    ...prevCart,
+                    [dish.id]: { dish, quantity: 1 },
+                };
+            }
+        });
+        setShowMessage(true);
         setTimeout(() => {
             setShowMessage(false);
-            setMessage(''); // Очищаем сообщение
+            setMessage('');
         }, 3000);
     };
 
+    const handleRemoveFromCart = (dish: DishType) => {
+        setCart((prevCart) => {
+            const currentDish = prevCart[dish.id];
+            if (currentDish) {
+                if (currentDish.quantity > 1) {
+                    return {
+                        ...prevCart,
+                        [dish.id]: { dish, quantity: currentDish.quantity - 1 },
+                    };
+                } else {
+                    const { [dish.id]: removed, ...newCart } = prevCart;
+                    setMessage(`"${dish.name}" удалено из корзины!`);
+                    setShowMessage(true);
+                    setTimeout(() => {
+                        setShowMessage(false);
+                        setMessage('');
+                    }, 3000);
+                    return newCart;
+                }
+            }
+            return prevCart;
+        });
+    };
+
+    const handleCheckout = async () => {
+        try {
+            const authToken = localStorage.getItem('authToken');
+            const customerId = Number(localStorage.getItem('customerId'));
+            const userId = Number(localStorage.getItem('userId'));
+            const userRole = localStorage.getItem('userRole') || '';
+
+            console.log(authToken, customerId, userId, userRole);
+
+            if (!authToken || !customerId || !userId) {
+                setMessage('Ошибка авторизации. Пожалуйста, авторизуйтесь заново.');
+                setShowMessage(true);
+                setTimeout(() => {
+                    setShowMessage(false);
+                    setMessage('');
+                }, 3000);
+                return; // Если нет авторизационных данных, выходим из функции
+            }
+
+            const response = await newOrder(authToken, customerId, userId, userRole, totalCost, cart);
+            if (!response.ok) {
+                throw new Error('Ошибка при оформлении заказа');
+            }
+
+            // Установите сообщение о успешном оформлении заказа
+            setMessage('Ваш заказ успешно оформлен!');
+            setShowMessage(true);
+            setTimeout(() => {
+                setShowMessage(false);
+                setMessage('');
+            }, 3000);
+
+            console.log('Оформление заказа:', Object.values(cart).map(item => ({ ...item.dish, quantity: item.quantity })));
+            setCart({});
+        } catch (error) {
+            console.error('Ошибка:', error);
+            setMessage('Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
+            setShowMessage(true);
+            setTimeout(() => {
+                setShowMessage(false);
+                setMessage('');
+            }, 3000);
+        }
+    };
+
+    const totalCost = Object.values(cart).reduce((total, item) => total + item.dish.cost * item.quantity, 0);
+
     return (
         <div className="menu-container">
-            {showLoading && <LinearProgress />} {/* Показываем полосу загрузки только если showLoading true */}
+            {showLoading && <LinearProgress />}
 
-            {!showLoading && ( // Отображаем контент только если showLoading false
+            {!showLoading && (
                 <>
-                    <h1 className="menu-title">Menu</h1>
-                    <p>Welcome to our menu</p>
+                    <div className="cart-container">
+                        <h2>Корзина</h2>
+                        {Object.keys(cart).length === 0 ? (
+                            <p>Корзина пуста.</p>
+                        ) : (
+                            <ul>
+                                {Object.values(cart).map(({ dish, quantity }) => (
+                                    <li key={dish.id} className="cart-item">
+                                        <h3>{dish.name}</h3>
+                                        <p>Стоимость: {dish.cost} руб. (Количество: {quantity})</p>
+                                        <button className='remove-button' onClick={() => handleRemoveFromCart(dish)}>Убрать одну</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <p className="total-cost">Суммарная стоимость: {totalCost} руб.</p>
+                        <button onClick={handleCheckout} disabled={Object.keys(cart).length === 0}>Оформить заказ</button>
+                    </div>
 
-                    {isAdmin && (
-                        <button className="add-dish-button">Добавить новое блюдо</button>
-                    )}
+                    <h1 className="menu-title">Меню</h1>
 
-                    {showMessage && <div className="cart-message">{message}</div>} {/* Отображаем сообщение */}
+                    {showMessage && <div className="cart-message">{message}</div>}
 
                     <ul>
                         {dishes.map((dish) => (
                             <li key={dish.id} className="menu-item">
                                 <h2>{dish.name}</h2>
-                                <p>Cost: ${dish.cost}</p>
-                                <p>Rating: {dish.rating}/5</p>
+                                <p>Стоимость: {dish.cost} руб.</p>
+                                <p>Рейтинг: {dish.rating}/10</p>
                                 <button onClick={() => handleAddToCart(dish)}>Добавить в корзину</button>
                             </li>
                         ))}

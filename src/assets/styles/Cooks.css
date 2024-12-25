@@ -29,7 +29,12 @@
 .input-field {
     margin-right: 10px;
     padding: 8px;
-    width: calc(20% - 10px);
+    width: 160px;
+    box-sizing: border-box;
+}
+
+.input-field:last-child {
+    margin-right: 0;
 }
 
 .add-button {

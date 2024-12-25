@@ -1,0 +1,26 @@
+button {
+    background-color: #484d53;
+    /* Синий цвет для кнопок */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.5s, transform 0.2s;
+    font-size: 1rem;
+    /* Увеличиваем размер шрифта */
+}
+
+button:hover {
+    background-color: #4abf46;
+    /* Темнее при наведении */
+    /* transform: scale(1.001); */
+    /* Увеличение при наведении */
+}
+
+button:disabled {
+    background-color: #ccc;
+    /* Серый цвет для отключенных кнопок */
+    cursor: not-allowed;
+    /* Курсор "недоступно" */
+}

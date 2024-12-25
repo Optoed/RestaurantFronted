@@ -24,19 +24,19 @@ const Register = () => {
             const response = await registerUser(payload);
             setSuccess({
                 isSuccess: true,
-                message: 'Registration successful! Please log in.',
+                message: 'Ваш аккаунт успешно зарегистрирован! Пожалуйста, авторизуйтесь.',
             });
 
             // После успешной регистрации перенаправляем на страницу логина
             setTimeout(() => {
                 navigate('/login'); // Перенаправление на страницу логина
-            }, 2000); // Ждем 2 секунды перед редиректом (чтобы пользователь успел увидеть сообщение)
+            }, 3000); // Ждем 2 секунды перед редиректом (чтобы пользователь успел увидеть сообщение)
 
             console.log(response);
         } catch (err: any) {
             setError({
                 isError: true,
-                message: err.response?.data?.message || 'An error occurred during registration.',
+                message: err.response?.data?.message || 'Ошибка во время регистрации!',
                 code: err.response?.status,
             });
             console.error(err);
@@ -45,10 +45,10 @@ const Register = () => {
 
     return (
         <div className='register-container'>
-            <h1>Register</h1>
+            <h1>Регистрация</h1>
             <div>
                 <div>
-                    Name
+                    Имя
                     <input
                         type='text'
                         value={name}
@@ -57,7 +57,7 @@ const Register = () => {
                     />
                 </div>
                 <div>
-                    Email
+                    Почта
                     <input
                         type="email"
                         value={email}
@@ -66,7 +66,7 @@ const Register = () => {
                     />
                 </div>
                 <div>
-                    Password
+                    Пароль
                     <input
                         type="password"
                         value={password}
@@ -74,19 +74,8 @@ const Register = () => {
                         required
                     />
                 </div>
-                <div>
-                    Role
-                    <select
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        required
-                    >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
                 <button type="button" onClick={handleRegister}>
-                    Register
+                    Зарегистрировать аккаунт
                 </button>
             </div>
             {error.isError && <p style={{ color: 'red' }}>{error.message}</p>}
@@ -94,7 +83,7 @@ const Register = () => {
 
             {/* Кнопка для перехода на страницу логина */}
             <div>
-                <button onClick={() => navigate('/login')}>Already have an account? Login</button>
+                <button onClick={() => navigate('/login')}>Уже есть аккаунт? Авторизуйтесь!</button>
             </div>
         </div>
     );
